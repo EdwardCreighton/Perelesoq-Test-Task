@@ -19,6 +19,8 @@ namespace Project_PlayerInteractions.Player
 		private Vector3 lastPosition;
 		private Quaternion lastRotation;
 
+		private bool isRotating;
+
 		#endregion
 		
 		public override void OnEnterState(PlayerFSMController controller)
@@ -40,6 +42,8 @@ namespace Project_PlayerInteractions.Player
 			currentPitch = 0f;
 			currentYaw = 0f;
 
+			controller.Player.Inventory.SetCurrentItem();
+
 			EventManager.ins.OnExamineItem += SetExamineItem;
 		}
 
@@ -49,6 +53,11 @@ namespace Project_PlayerInteractions.Player
 			{
 				controller.MoveToState(currentItem.transform.parent ? controller.holdingItemState : controller.searchState);
 				return;
+			}
+
+			if (isRotating)
+			{
+				RotateItem();
 			}
 
 			if (controller.Player.ControlData.interactTrigger)
@@ -65,28 +74,33 @@ namespace Project_PlayerInteractions.Player
 							hitInfo.transform.GetComponent<Interactable>().RaiseInteraction();
 							return;
 						}
-						
-						if (hitInfo.transform.CompareTag("Item"))
-						{
-							EventManager.ins.RaiseOnPickUpItem(hitInfo.transform.GetComponent<Item>());
-							return;
-						}
 					}
 				}
 			}
 
-			if (!controller.Player.ControlData.interactHold) return;
-			
-			SetRay();
-			Raycast();
+			if (controller.Player.ControlData.interactHold && !isRotating)
+			{
+				SetRay();
+				Raycast();
 
-			if (!hitInfo.transform || hitInfo.transform != itemTransform)
-			{
-				RotateItem();
+				if (!hitInfo.transform || hitInfo.transform != itemTransform)
+				{
+					//RotateItem();
+					isRotating = true;
+				}
+				else if (hitInfo.transform.CompareTag("Interactable") && hitInfo.transform.parent != currentItem.InteractablesTransform)
+				{
+					//RotateItem();
+					isRotating = true;
+				}
+				else
+				{
+					isRotating = false;
+				}
 			}
-			else if (hitInfo.transform.CompareTag("Interactable") && hitInfo.transform.parent != currentItem.InteractablesTransform)
+			else if (!controller.Player.ControlData.interactHold)
 			{
-				RotateItem();
+				isRotating = false;
 			}
 		}
 
@@ -105,6 +119,8 @@ namespace Project_PlayerInteractions.Player
 
 			controller.Player.ItemExaminePoint.localEulerAngles = Vector3.zero;
 
+			controller.Player.Inventory.ForceSetCurrentItemToNull();
+			
 			Cursor.lockState = CursorLockMode.Locked;
 			EventManager.ins.RaiseOnExamineToggle(false);
 			EventManager.ins.OnExamineItem -= SetExamineItem;

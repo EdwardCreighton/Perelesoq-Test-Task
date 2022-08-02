@@ -81,7 +81,6 @@ namespace Project_PlayerInteractions.Player
 		{
 			controlHandler.OnUpdateComponent();
 			
-			inventory.SetCurrentItem();
 			fsmController.OnUpdate();
 		}
 	}

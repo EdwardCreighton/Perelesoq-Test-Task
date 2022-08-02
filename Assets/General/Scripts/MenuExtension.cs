@@ -88,6 +88,10 @@ namespace Project_PlayerInteractions
 			
 			Animator animator = interactable.AddComponent<Animator>();
 			animator.applyRootMotion = true;
+			
+			Rigidbody rigidbody = interactable.AddComponent<Rigidbody>();
+			rigidbody.isKinematic = true;
+			rigidbody.useGravity = false;
 
 			interactable.AddComponent<MeshFilter>();
 			interactable.AddComponent<MeshRenderer>();

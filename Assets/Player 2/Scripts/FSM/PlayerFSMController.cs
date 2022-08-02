@@ -33,7 +33,6 @@ namespace Project_PlayerInteractions.Player
 		public readonly Abstract_State moveObjectState = new MoveObject_State();
 
 		public readonly Abstract_State examineState = new Examine_State();
-		public readonly Abstract_State examineRotateState = new ExamineRotate_State();
 
 		#endregion
 

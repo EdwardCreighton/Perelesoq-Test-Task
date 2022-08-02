@@ -20,7 +20,7 @@ namespace Project_PlayerInteractions
 		public event Action<Item, Ghost> OnDropItem;
 		public event Action<Item> OnUseItem;
 		public event Action<List<Item>> OnUpdateInventoryUI;
-		public event Action<Item> OnPickActiveItem;
+		public event Action<Item> OnPickActiveItemUI;
 		public event Action<string> OnInteractableFocus;
 		public event Action<TipsInfo> OnToggleTips;
 		public event Action<Item> OnExamineItem;
@@ -35,7 +35,7 @@ namespace Project_PlayerInteractions
 		public void RaiseOnDropItem(Item item, Ghost ghost) => OnDropItem?.Invoke(item, ghost);
 		public void RaiseOnUseItem(Item item) => OnUseItem?.Invoke(item);
 		public void RaiseOnUpdateInventoryUI(List<Item> items) => OnUpdateInventoryUI?.Invoke(items);
-		public void RaiseOnPickActiveItem(Item item) => OnPickActiveItem?.Invoke(item);
+		public void RaiseOnPickActiveItemUI(Item item) => OnPickActiveItemUI?.Invoke(item);
 		public void RaiseOnInteractableFocus(string name = null) => OnInteractableFocus?.Invoke(name);
 		public void RaiseOnToggleTips(TipsInfo tipsInfo = null) => OnToggleTips?.Invoke(tipsInfo);
 		public void RaiseOnExamineItem(Item item) => OnExamineItem?.Invoke(item);

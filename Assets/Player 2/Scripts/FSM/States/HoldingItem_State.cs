@@ -33,6 +33,8 @@ namespace Project_PlayerInteractions.Player
 
 		public override void OnUpdate()
 		{
+			controller.Player.Inventory.SetCurrentItem();
+			
 			controller.MoveCharacter();
 			controller.LookAround();
 

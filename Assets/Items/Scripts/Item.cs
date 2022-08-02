@@ -16,6 +16,8 @@ namespace Project_PlayerInteractions.Items
 		[Space]
 		[Tooltip("Set -1 if no interactions available for this item")][SerializeField] private int interactionID = -1;
 		[Space]
+		[SerializeField] private bool isNested;
+		[Space]
 		[SerializeField] private bool examineEnabled;
 		[Space]
 		[SerializeField] private float pitchTopLimit = 45f;
@@ -65,18 +67,18 @@ namespace Project_PlayerInteractions.Items
 			interactablesTransform = transform.Find("INTERACTABLES");
 			int count = interactablesTransform.childCount;
 
-			if (count == 0) return;
-
-			innerInteractablesColliders = new List<Collider>();
-			
-			for (int i = 0; i < count; i++)
+			if (count != 0)
 			{
-				if (interactablesTransform.GetChild(i).CompareTag("Interactable"))
+				innerInteractablesColliders = new List<Collider>(count);
+			
+				for (int i = 0; i < count; i++)
 				{
 					innerInteractablesColliders.Add(interactablesTransform.GetChild(i).GetComponent<Collider>());
 					innerInteractablesColliders[i].enabled = false;
 				}
 			}
+
+			gameObject.SetActive(!isNested);
 		}
 
 		public void OnExamineModeToggle(bool examine)

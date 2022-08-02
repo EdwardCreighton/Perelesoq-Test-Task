@@ -65,7 +65,20 @@ namespace Project_PlayerInteractions.Player
 				pickedItems[currentItemIndex].gameObject.SetActive(true);
 			}
 			
-			EventManager.ins.RaiseOnPickActiveItem(CurrentItem);
+			EventManager.ins.RaiseOnPickActiveItemUI(CurrentItem);
+		}
+
+		public void ForceSetCurrentItemToNull()
+		{
+			foreach (var item in pickedItems)
+			{
+				item.gameObject.SetActive(false);
+			}
+
+			currentItemIndex = -1;
+			
+			EventManager.ins.RaiseOnUpdateInventoryUI(pickedItems);
+			EventManager.ins.RaiseOnPickActiveItemUI(CurrentItem);
 		}
 
 		private void PickUpItem(Item newItem)
@@ -89,7 +102,7 @@ namespace Project_PlayerInteractions.Player
 			transform.localEulerAngles = newItem.HoldRotationOffset;
 			
 			EventManager.ins.RaiseOnUpdateInventoryUI(pickedItems);
-			EventManager.ins.RaiseOnPickActiveItem(CurrentItem);
+			EventManager.ins.RaiseOnPickActiveItemUI(CurrentItem);
 		}
 
 		private void DropItem(Item item, Ghost ghost)
@@ -108,7 +121,7 @@ namespace Project_PlayerInteractions.Player
 			currentItemIndex = -1;
 			
 			EventManager.ins.RaiseOnUpdateInventoryUI(pickedItems);
-			EventManager.ins.RaiseOnPickActiveItem(CurrentItem);
+			EventManager.ins.RaiseOnPickActiveItemUI(CurrentItem);
 		}
 
 		private void ReleaseItem(Item item)
@@ -120,7 +133,7 @@ namespace Project_PlayerInteractions.Player
 			currentItemIndex = -1;
 			
 			EventManager.ins.RaiseOnUpdateInventoryUI(pickedItems);
-			EventManager.ins.RaiseOnPickActiveItem(CurrentItem);
+			EventManager.ins.RaiseOnPickActiveItemUI(CurrentItem);
 		}
 	}
 }

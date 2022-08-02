@@ -37,7 +37,7 @@ namespace Project_PlayerInteractions.UI
 			lastActiveItem = null;
 
 			EventManager.ins.OnUpdateInventoryUI += UpdateUI;
-			EventManager.ins.OnPickActiveItem += SetCurrentItem;
+			EventManager.ins.OnPickActiveItemUI += SetCurrentItemUI;
 		}
 
 		private void UpdateUI(List<Item> pickedItems)
@@ -61,7 +61,7 @@ namespace Project_PlayerInteractions.UI
 			}
 		}
 
-		private void SetCurrentItem(Item item)
+		private void SetCurrentItemUI(Item item)
 		{
 			lastActiveItem?.SetBackground(standardBackground);
 
