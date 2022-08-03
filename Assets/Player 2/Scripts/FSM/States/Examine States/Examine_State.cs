@@ -194,64 +194,64 @@ namespace Project_PlayerInteractions.Player
 			applyItem = item;
 			applyItemCopy = Object.Instantiate(applyItem.gameObject, Vector3.zero, Quaternion.identity);
 			applyItemCopy.SetActive(true);
-			//applyItemCopy.GetComponent<Item>().PhysicCollider.SetActive(false);
 		}
 
 		private void UseItem()
 		{
 			SetRay();
 			Raycast();
+			
+			applyItemCopy.transform.parent = null;
 
-			if (hitInfo.transform)
-			{
-				if (applyItem.InteractionID > -1) // Can we use the item?
-				{
-					if (hitInfo.transform.CompareTag("Applicable")) // The hit target is Applicable?
-					{
-						if (!focusedApplicable || hitInfo.transform != focusedApplicable.transform)
-						{
-							focusedApplicable = hitInfo.transform.GetComponent<Applicable>();
-						}
-						
-						if (applyItem.InteractionID == focusedApplicable.InteractionID)
-						{
-							applyItemCopy.transform.position = focusedApplicable.TargetPosition + hitInfo.transform.position;
-							Vector3 rotation = hitInfo.transform.eulerAngles + hitInfo.transform.TransformDirection(focusedApplicable.TargetRotation);
-							applyItemCopy.transform.rotation = Quaternion.Euler(rotation);
-
-							if (!controller.Player.ControlData.interactHold)
-							{
-								EventManager.ins.RaiseOnUseItem(applyItem);
-
-								applyItem.transform.position = applyItemCopy.transform.position;
-								applyItem.transform.rotation = applyItemCopy.transform.rotation;
-								
-								applyItem.gameObject.SetActive(true);
-								
-								focusedApplicable.RaiseInteraction();
-								
-								isUsingItem = false;
-								Object.Destroy(applyItemCopy);
-							}
-						}
-						else
-						{
-							SimplePositionApplyItem();
-						}
-					}
-					else
-					{
-						SimplePositionApplyItem();
-					}
-				}
-				else
-				{
-					SimplePositionApplyItem();
-				}
-			}
-			else
+			if (!hitInfo.transform)
 			{
 				SimplePositionApplyItem();
+				return;
+			}
+
+			if (applyItem.InteractionID == -1) // Cannot use item
+			{
+				SimplePositionApplyItem();
+				return;
+			}
+
+			if (!hitInfo.transform.CompareTag("Applicable"))
+			{
+				SimplePositionApplyItem();
+				return;
+			}
+
+			if (!focusedApplicable || hitInfo.transform != focusedApplicable.transform)
+			{
+				focusedApplicable = hitInfo.transform.GetComponent<Applicable>();
+			}
+
+			if (applyItem.InteractionID != focusedApplicable.InteractionID)
+			{
+				SimplePositionApplyItem();
+				return;
+			}
+			
+			// All checks are passed
+
+			applyItemCopy.transform.parent = focusedApplicable.transform;
+			
+			applyItemCopy.transform.localPosition = focusedApplicable.TargetPosition;
+			applyItemCopy.transform.localRotation = Quaternion.Euler(focusedApplicable.TargetRotation);
+
+			if (!controller.Player.ControlData.interactHold)
+			{
+				EventManager.ins.RaiseOnUseItem(applyItem);
+
+				applyItem.transform.position = applyItemCopy.transform.position;
+				applyItem.transform.rotation = applyItemCopy.transform.rotation;
+								
+				applyItem.gameObject.SetActive(true);
+								
+				focusedApplicable.RaiseInteraction();
+								
+				isUsingItem = false;
+				Object.Destroy(applyItemCopy);
 			}
 		}
 

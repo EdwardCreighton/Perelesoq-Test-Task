@@ -49,7 +49,7 @@ namespace Project_PlayerInteractions.Player
 			tipsInfo.look = item.ExamineEnabled;
 			EventManager.ins.RaiseOnToggleTips(tipsInfo);
 
-			if (controller.Player.ControlData.examineTrigger)
+			if (controller.Player.ControlData.examineTrigger && item.ExamineEnabled)
 			{
 				controller.MoveToState(controller.examineState);
 				EventManager.ins.RaiseOnExamineItem(item);
