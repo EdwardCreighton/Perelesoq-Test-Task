@@ -20,6 +20,11 @@ namespace Project_PlayerInteractions.Player
 		private Quaternion lastRotation;
 
 		private bool isRotating;
+		private bool isUsingItem;
+		
+		private Item applyItem;
+		private GameObject applyItemCopy;
+		private Applicable focusedApplicable;
 
 		#endregion
 		
@@ -45,6 +50,7 @@ namespace Project_PlayerInteractions.Player
 			controller.Player.Inventory.SetCurrentItem();
 
 			EventManager.ins.OnExamineItem += SetExamineItem;
+			EventManager.ins.OnExamineUseItem += StartUseItem;
 		}
 
 		public override void OnUpdate()
@@ -52,6 +58,13 @@ namespace Project_PlayerInteractions.Player
 			if (controller.Player.ControlData.examineTrigger) // TODO: Add cancel trigger (Esc)
 			{
 				controller.MoveToState(currentItem.transform.parent ? controller.holdingItemState : controller.searchState);
+				return;
+			}
+
+			if (isUsingItem)
+			{
+				UseItem();
+				
 				return;
 			}
 
@@ -85,12 +98,10 @@ namespace Project_PlayerInteractions.Player
 
 				if (!hitInfo.transform || hitInfo.transform != itemTransform)
 				{
-					//RotateItem();
 					isRotating = true;
 				}
 				else if (hitInfo.transform.CompareTag("Interactable") && hitInfo.transform.parent != currentItem.InteractablesTransform)
 				{
-					//RotateItem();
 					isRotating = true;
 				}
 				else
@@ -123,7 +134,9 @@ namespace Project_PlayerInteractions.Player
 			
 			Cursor.lockState = CursorLockMode.Locked;
 			EventManager.ins.RaiseOnExamineToggle(false);
+			
 			EventManager.ins.OnExamineItem -= SetExamineItem;
+			EventManager.ins.OnExamineUseItem -= StartUseItem;
 		}
 
 		private void SetExamineItem(Item item)
@@ -168,6 +181,93 @@ namespace Project_PlayerInteractions.Player
 			controller.Player.ItemExaminePoint.localEulerAngles = currentRotation;
 		}
 
+		private void StartUseItem(Item item)
+		{
+			if (item == currentItem)
+			{
+				EventManager.ins.RaiseOnPickUpItem(null);
+				return;
+			}
+			
+			isUsingItem = true;
+
+			applyItem = item;
+			applyItemCopy = Object.Instantiate(applyItem.gameObject, Vector3.zero, Quaternion.identity);
+			applyItemCopy.SetActive(true);
+			//applyItemCopy.GetComponent<Item>().PhysicCollider.SetActive(false);
+		}
+
+		private void UseItem()
+		{
+			SetRay();
+			Raycast();
+
+			if (hitInfo.transform)
+			{
+				if (applyItem.InteractionID > -1) // Can we use the item?
+				{
+					if (hitInfo.transform.CompareTag("Applicable")) // The hit target is Applicable?
+					{
+						if (!focusedApplicable || hitInfo.transform != focusedApplicable.transform)
+						{
+							focusedApplicable = hitInfo.transform.GetComponent<Applicable>();
+						}
+						
+						if (applyItem.InteractionID == focusedApplicable.InteractionID)
+						{
+							applyItemCopy.transform.position = focusedApplicable.TargetPosition + hitInfo.transform.position;
+							Vector3 rotation = hitInfo.transform.eulerAngles + hitInfo.transform.TransformDirection(focusedApplicable.TargetRotation);
+							applyItemCopy.transform.rotation = Quaternion.Euler(rotation);
+
+							if (!controller.Player.ControlData.interactHold)
+							{
+								EventManager.ins.RaiseOnUseItem(applyItem);
+
+								applyItem.transform.position = applyItemCopy.transform.position;
+								applyItem.transform.rotation = applyItemCopy.transform.rotation;
+								
+								applyItem.gameObject.SetActive(true);
+								
+								focusedApplicable.RaiseInteraction();
+								
+								isUsingItem = false;
+								Object.Destroy(applyItemCopy);
+							}
+						}
+						else
+						{
+							SimplePositionApplyItem();
+						}
+					}
+					else
+					{
+						SimplePositionApplyItem();
+					}
+				}
+				else
+				{
+					SimplePositionApplyItem();
+				}
+			}
+			else
+			{
+				SimplePositionApplyItem();
+			}
+		}
+
+		private void SimplePositionApplyItem()
+		{
+			applyItemCopy.transform.position = controller.Player.CameraTransform.position + ray.direction * 0.7f;
+			applyItemCopy.transform.rotation = Quaternion.identity;
+
+			if (!controller.Player.ControlData.interactHold)
+			{
+				isUsingItem = false;
+				Object.Destroy(applyItemCopy);
+				EventManager.ins.RaiseOnPickUpItem(null);
+			}
+		}
+
 		private new void SetRay()
 		{
 			rayOrigin = Input.mousePosition;
@@ -178,6 +278,7 @@ namespace Project_PlayerInteractions.Player
 		private new void Raycast()
 		{
 			Physics.Raycast(ray, out hitInfo);
+			//Debug.Log(hitInfo.transform.name);
 		}
 	}
 }

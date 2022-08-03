@@ -118,6 +118,10 @@ namespace Project_PlayerInteractions
 
 			applicable.AddComponent<Applicable>();
 
+			Rigidbody rigidbody = applicable.AddComponent<Rigidbody>();
+			rigidbody.isKinematic = true;
+			rigidbody.useGravity = false;
+
 			applicable.AddComponent<MeshFilter>();
 			applicable.AddComponent<MeshRenderer>();
 

@@ -30,6 +30,7 @@ namespace Project_PlayerInteractions.Player
 			EventManager.ins.OnPickUpItem += PickUpItem;
 			EventManager.ins.OnDropItem += DropItem;
 			EventManager.ins.OnUseItem += ReleaseItem;
+			EventManager.ins.OnForceSetCurrentItem += ForceSetCurrentItem;
 		}
 		
 		public void SetCurrentItem()
@@ -81,8 +82,25 @@ namespace Project_PlayerInteractions.Player
 			EventManager.ins.RaiseOnPickActiveItemUI(CurrentItem);
 		}
 
+		private void ForceSetCurrentItem(int itemIndex)
+		{
+			currentItemIndex = itemIndex;
+			
+			EventManager.ins.RaiseOnExamineUseItem(CurrentItem);
+			
+			// Does not update UI as it's not needed, UI is disabled
+		}
+
 		private void PickUpItem(Item newItem)
 		{
+			if (!newItem)
+			{
+				EventManager.ins.RaiseOnUpdateInventoryUI(pickedItems);
+				EventManager.ins.RaiseOnPickActiveItemUI(CurrentItem);
+				
+				return;
+			}
+			
 			if (pickedItems.Count == 10)
 			{
 				// TODO: Tell player of full inventory

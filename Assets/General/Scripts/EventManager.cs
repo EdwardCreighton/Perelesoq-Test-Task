@@ -26,6 +26,8 @@ namespace Project_PlayerInteractions
 		public event Action<Item> OnExamineItem;
 		public event Action<bool> OnExamineToggle; 
 		public event Action<InputSchemeType> OnChangeControls;
+		public event Action<int> OnForceSetCurrentItem;
+		public event Action<Item> OnExamineUseItem;
 
 		#endregion
 
@@ -41,5 +43,7 @@ namespace Project_PlayerInteractions
 		public void RaiseOnExamineItem(Item item) => OnExamineItem?.Invoke(item);
 		public void RaiseOnChangeControls(InputSchemeType type) => OnChangeControls?.Invoke(type);
 		public void RaiseOnExamineToggle(bool examineState) => OnExamineToggle?.Invoke(examineState);
+		public void RaiseOnForceSetCurrentItem(int buttonIndex) => OnForceSetCurrentItem?.Invoke(buttonIndex);
+		public void RaiseOnExamineUseItem(Item item) => OnExamineUseItem?.Invoke(item);
 	}
 }

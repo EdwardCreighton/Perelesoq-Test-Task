@@ -38,6 +38,7 @@ namespace Project_PlayerInteractions.UI
 
 			EventManager.ins.OnUpdateInventoryUI += UpdateUI;
 			EventManager.ins.OnPickActiveItemUI += SetCurrentItemUI;
+			EventManager.ins.OnForceSetCurrentItem += DisableAllUI;
 		}
 
 		private void UpdateUI(List<Item> pickedItems)
@@ -79,6 +80,16 @@ namespace Project_PlayerInteractions.UI
 					lastActiveItem.SetBackground(onChooseBackground);
 					return;
 				}
+			}
+		}
+
+		private void DisableAllUI(int buttonIndex)
+		{
+			// buttonIndex is irrelevant for this method
+			
+			foreach (var itemUI in items)
+			{
+				itemUI.itemPlaceHolder.SetActive(false);
 			}
 		}
 	}
