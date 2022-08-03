@@ -35,8 +35,6 @@ namespace Project_PlayerInteractions.Player
 			rigidbody = hitInfo.rigidbody;
 			
 			distance = hitInfo.distance;
-
-			// TODO: Enable tips
 		}
 
 		public override void OnUpdate()
@@ -66,8 +64,6 @@ namespace Project_PlayerInteractions.Player
 		public override void OnExitState()
 		{
 			Object.Destroy(dragPoint.gameObject);
-			
-			// TODO: Disable tips
 		}
 	}
 }

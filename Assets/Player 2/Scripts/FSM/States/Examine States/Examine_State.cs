@@ -202,14 +202,14 @@ namespace Project_PlayerInteractions.Player
 			Raycast();
 			
 			applyItemCopy.transform.parent = null;
-
-			if (!hitInfo.transform)
+			
+			if (applyItem.InteractionID == -1) // Cannot use item
 			{
 				SimplePositionApplyItem();
 				return;
 			}
 
-			if (applyItem.InteractionID == -1) // Cannot use item
+			if (!hitInfo.transform)
 			{
 				SimplePositionApplyItem();
 				return;

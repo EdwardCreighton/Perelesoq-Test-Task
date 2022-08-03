@@ -18,7 +18,8 @@ namespace Project_PlayerInteractions
 				{
 					parent = null,
 					position = camera.position + camera.forward * 5f,
-					localRotation = Quaternion.identity
+					localRotation = Quaternion.identity,
+					localScale = Vector3.one
 				},
 				
 				tag = "Item"
@@ -37,7 +38,8 @@ namespace Project_PlayerInteractions
 				{
 					parent = item.transform,
 					localPosition = Vector3.zero,
-					localRotation = Quaternion.identity
+					localRotation = Quaternion.identity,
+					localScale = Vector3.one
 				}
 			};
 
@@ -50,7 +52,8 @@ namespace Project_PlayerInteractions
 				{
 					parent = item.transform,
 					localPosition = Vector3.zero,
-					localRotation = Quaternion.identity
+					localRotation = Quaternion.identity,
+					localScale = Vector3.one
 				}
 			};
 
@@ -62,7 +65,8 @@ namespace Project_PlayerInteractions
 				{
 					parent = item.transform,
 					localPosition = Vector3.zero,
-					localRotation = Quaternion.identity
+					localRotation = Quaternion.identity,
+					localScale = Vector3.one
 				}
 			};
 		}
@@ -78,7 +82,8 @@ namespace Project_PlayerInteractions
 				{
 					parent = Selection.activeTransform == null ? null : Selection.activeTransform,
 					localPosition = Selection.activeTransform == null ? camera.position + camera.forward * 5f : Vector3.zero,
-					localRotation = Quaternion.identity
+					localRotation = Quaternion.identity,
+					localScale = Vector3.one
 				},
 				
 				tag = "Interactable"
@@ -110,7 +115,8 @@ namespace Project_PlayerInteractions
 				{
 					parent = Selection.activeTransform == null ? null : Selection.activeTransform,
 					localPosition = Selection.activeTransform == null ? camera.position + camera.forward * 5f : Vector3.zero,
-					localRotation = Quaternion.identity
+					localRotation = Quaternion.identity,
+					localScale = Vector3.one
 				},
 				
 				tag = "Applicable"
